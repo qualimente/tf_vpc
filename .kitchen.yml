@@ -1,0 +1,24 @@
+---
+driver:
+  name: terraform
+
+platforms:
+  - name: aws
+
+suites:
+  - name: minimal
+    provisioner:
+      name: terraform
+      apply_timeout: 600
+      color: true
+      directory: >-
+        test/fixtures/minimal
+      variables:
+        user: <%= ENV['USER'] %>
+    verifier:
+      name: terraform
+      format: doc
+      groups:
+        - name: terraform
+          controls:
+            - terraform_state
