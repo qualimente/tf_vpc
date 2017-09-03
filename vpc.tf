@@ -16,3 +16,30 @@ resource "aws_vpc" "main" {
     Owner       = "${var.owner}"
   }
 }
+
+resource "aws_internet_gateway" "main" {
+  vpc_id = "${aws_vpc.main.id}"
+
+  tags {
+    Name        = "${var.name}"
+    Environment = "${var.env}"
+    ManagedBy   = "Terraform"
+  }
+}
+
+module "dmz_subnets" {
+  source = "git::ssh://git@github.com/terraform-community-modules/tf_aws_public_subnet?ref=v1.0.0"
+  name   = "${var.env}-dmz"
+  cidrs  = "${var.dmz_subnet_cidrs}"
+  azs    = "${var.availability_zones}"
+  vpc_id = "${aws_vpc.main.id}"
+  igw_id = "${aws_internet_gateway.main.id}"
+
+  map_public_ip_on_launch = "false"
+
+  tags {
+    "VPCName"     = "${var.name}"
+    "ManagedBy"   = "Terraform"
+    "Environment" = "${var.env}"
+  }
+}

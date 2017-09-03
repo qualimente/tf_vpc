@@ -22,8 +22,21 @@ variable "availability_zones" {
   type        = "list"
 }
 
+# Define a CIDR block for the VPC and Availability Zones within the VPC
+# https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing
 variable "cidr_block" {
   description = "The base CIDR block for the VPC; must be a /16"
+  type        = "string"
+}
+
+variable "dmz_subnet_cidrs" {
+  description = "list of subnet blocks for dmz subnets for 'standard' data"
+  type        = "list"
+}
+
+variable "enable_vpn_gateway" {
+  description = "A boolean indicating whether to provision a vpn gateway for the VPC. Set to 1 if connecting VPC to a remote datacenter."
+  default     = "0"
   type        = "string"
 }
 
