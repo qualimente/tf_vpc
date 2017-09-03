@@ -17,6 +17,19 @@ resource "aws_vpc" "main" {
   }
 }
 
+resource "aws_vpn_gateway" "remote_vgw" {
+  count      = "${var.num_vpn_gateways}"
+  vpc_id     = "${aws_vpc.main.id}"
+  depends_on = ["aws_vpc.main"]
+
+  tags {
+    Name        = "vgw-${var.env}-${count.index}"
+    ManagedBy   = "Terraform"
+    Environment = "${var.env}"
+    Description = "VPN gateway for connecting to a remote datacenter via, e.g. DirectConnect"
+  }
+}
+
 resource "aws_internet_gateway" "main" {
   vpc_id = "${aws_vpc.main.id}"
 

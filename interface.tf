@@ -34,8 +34,8 @@ variable "dmz_subnet_cidrs" {
   type        = "list"
 }
 
-variable "enable_vpn_gateway" {
-  description = "A boolean indicating whether to provision a vpn gateway for the VPC. Set to 1 if connecting VPC to a remote datacenter."
+variable "num_vpn_gateways" {
+  description = "The number of VPN gateways to provision for the VPC. Set to 1 or more if connecting VPC to a remote datacenter."
   default     = "0"
   type        = "string"
 }
