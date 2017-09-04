@@ -30,7 +30,12 @@ variable "cidr_block" {
 }
 
 variable "dmz_subnet_cidrs" {
-  description = "list of subnet blocks for dmz subnets for 'standard' data"
+  description = "list of subnet blocks for dmz subnets"
+  type        = "list"
+}
+
+variable "app_subnet_cidrs" {
+  description = "list of subnet blocks for app subnets"
   type        = "list"
 }
 
@@ -63,6 +68,11 @@ output "vpc.id" {
 }
 
 output "vpc.cidr_block" {
-  //  value = "${aws_vpc.main.cidr_block}"
   value = "${aws_vpc.main.cidr_block}"
+}
+
+output "nat_eips" {
+  value = [
+    "${aws_eip.nat.*.public_ip}",
+  ]
 }
