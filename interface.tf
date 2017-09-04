@@ -39,6 +39,11 @@ variable "app_subnet_cidrs" {
   type        = "list"
 }
 
+variable "data_subnet_cidrs" {
+  description = "list of subnet blocks for data subnets"
+  type        = "list"
+}
+
 variable "num_vpn_gateways" {
   description = "The number of VPN gateways to provision for the VPC. Set to 1 or more if connecting VPC to a remote datacenter."
   default     = "0"

@@ -6,6 +6,6 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "nat" {
   allocation_id = "${element(aws_eip.nat.*.id, count.index)}"
-  subnet_id = "${element(module.dmz_subnets.subnet_ids, count.index)}"
-  count     = "${length(var.dmz_subnet_cidrs)}"
+  subnet_id     = "${element(module.dmz_subnets.subnet_ids, count.index)}"
+  count         = "${length(var.dmz_subnet_cidrs)}"
 }

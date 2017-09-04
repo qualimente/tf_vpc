@@ -58,10 +58,25 @@ module "dmz_subnets" {
 }
 
 module "app_subnets" {
-  source          = "git::ssh://git@github.com/qualimente/tf_aws_private_subnet?ref=70903d0"
+  source          = "git::ssh://git@github.com/qualimente/tf_aws_private_subnet?ref=b534d5f"
   name            = "${var.env}-app"
   vpc_id          = "${aws_vpc.main.id}"
   cidrs           = "${var.app_subnet_cidrs}"
+  azs             = "${var.availability_zones}"
+  nat_gateway_ids = "${aws_nat_gateway.nat.*.id}"
+
+  tags {
+    "VPCName"     = "${var.name}"
+    "ManagedBy"   = "Terraform"
+    "Environment" = "${var.env}"
+  }
+}
+
+module "data_subnets" {
+  source          = "git::ssh://git@github.com/qualimente/tf_aws_private_subnet?ref=b534d5f"
+  name            = "${var.env}-data"
+  vpc_id          = "${aws_vpc.main.id}"
+  cidrs           = "${var.data_subnet_cidrs}"
   azs             = "${var.availability_zones}"
   nat_gateway_ids = "${aws_nat_gateway.nat.*.id}"
 
