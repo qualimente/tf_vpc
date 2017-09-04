@@ -30,17 +30,22 @@ variable "cidr_block" {
 }
 
 variable "dmz_subnet_cidrs" {
-  description = "list of subnet blocks for dmz subnets"
+  description = "list of cidr blocks for dmz subnets"
   type        = "list"
 }
 
 variable "app_subnet_cidrs" {
-  description = "list of subnet blocks for app subnets"
+  description = "list of cidr blocks for app subnets"
   type        = "list"
 }
 
 variable "data_subnet_cidrs" {
-  description = "list of subnet blocks for data subnets"
+  description = "list of cidr blocks for data subnets"
+  type        = "list"
+}
+
+variable "mgmt_subnet_cidrs" {
+  description = "list of cidr blocks for management subnets"
   type        = "list"
 }
 
