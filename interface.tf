@@ -22,8 +22,36 @@ variable "availability_zones" {
   type        = "list"
 }
 
+# Define a CIDR block for the VPC and Availability Zones within the VPC
+# https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing
 variable "cidr_block" {
   description = "The base CIDR block for the VPC; must be a /16"
+  type        = "string"
+}
+
+variable "dmz_subnet_cidrs" {
+  description = "list of cidr blocks for dmz subnets"
+  type        = "list"
+}
+
+variable "app_subnet_cidrs" {
+  description = "list of cidr blocks for app subnets"
+  type        = "list"
+}
+
+variable "data_subnet_cidrs" {
+  description = "list of cidr blocks for data subnets"
+  type        = "list"
+}
+
+variable "mgmt_subnet_cidrs" {
+  description = "list of cidr blocks for management subnets"
+  type        = "list"
+}
+
+variable "num_vpn_gateways" {
+  description = "The number of VPN gateways to provision for the VPC. Set to 1 or more if connecting VPC to a remote datacenter."
+  default     = "0"
   type        = "string"
 }
 
@@ -50,6 +78,11 @@ output "vpc.id" {
 }
 
 output "vpc.cidr_block" {
-  //  value = "${aws_vpc.main.cidr_block}"
   value = "${aws_vpc.main.cidr_block}"
+}
+
+output "nat_eips" {
+  value = [
+    "${aws_eip.nat.*.public_ip}",
+  ]
 }
