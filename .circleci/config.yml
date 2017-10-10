@@ -25,3 +25,6 @@ jobs:
       - run:
           name: verify minimal test infra
           command: bundle exec kitchen verify
+      - run:
+          name: destroy minimal test infra
+          command: bundle exec kitchen destroy
