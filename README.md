@@ -2,6 +2,8 @@
 
 tf_vpc provides a VPC network that is distributed across 3 Availability Zones for high availability and segmented into dmz, app, data, and admin zones to provide isolation between system components.
 
+[![CircleCI](https://circleci.com/gh/qualimente/tf_vpc.svg?style=svg&circle-token=82470ca565e0667b6ab2ad2bf1458bd12a32742d)](https://circleci.com/gh/qualimente/tf_vpc)
+
 ## Local Development and Testing
 
 Testing modules locally can be accomplished using a series of `Make` tasks
