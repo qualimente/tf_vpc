@@ -2,7 +2,7 @@ version: 2
 
 terraform: &terraform
   docker:
-    - image: qualimente/terraform-spec:20171010-0527-75d458d
+    - image: qualimente/terraform-infra-dev:0.9
   working_directory: /module
 
 jobs:

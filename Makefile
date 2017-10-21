@@ -1,5 +1,11 @@
-.PHONY: format converge verify destroy test kitchen
-TERRAFORM_SPEC_VERSION := 0.9.11
+.PHONY: deps format converge verify destroy test kitchen build
+IMAGE_NAME := qualimente/terraform-infra-dev
+IMAGE_TAG := 0.9
+
+FQ_IMAGE := $(IMAGE_NAME):$(IMAGE_TAG)
+
+deps:
+	@docker pull $(FQ_IMAGE)
 
 define execute
 	if [ -z "$(CI)" ]; then \
@@ -13,7 +19,7 @@ define execute
 			-v $(shell pwd):/module \
 			-v $(HOME)/.aws:/root/.aws:ro \
 			-v $(HOME)/.netrc:/root/.netrc:ro \
-			qualimente/terraform-spec:$(TERRAFORM_SPEC_VERSION) \
+			$(FQ_IMAGE) \
 			kitchen $(1) $(KITCHEN_OPTS); \
 	else \
 		echo bundle exec kitchen $(1) $(KITCHEN_OPTS); \
@@ -21,10 +27,10 @@ define execute
 	fi;
 endef
 
-format:
+format: deps
 	@docker run --rm -it \
 		-v $(shell pwd):/module \
-		qualimente/terraform-spec:$(TERRAFORM_SPEC_VERSION) \
+		$(FQ_IMAGE) \
 		terraform fmt
 
 converge:
@@ -42,3 +48,4 @@ test:
 kitchen:
 	@$(call execute,$(COMMAND))
 
+all: deps format converge verify
