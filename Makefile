@@ -7,7 +7,7 @@ FQ_IMAGE := $(IMAGE_NAME):$(IMAGE_TAG)
 deps:
 	@docker pull $(FQ_IMAGE)
 
-define execute
+define kitchen
 	if [ -z "$(CI)" ]; then \
 		docker run --rm -it \
 			-e AWS_PROFILE=$(AWS_PROFILE) \
@@ -20,7 +20,7 @@ define execute
 			-v $(HOME)/.aws:/root/.aws:ro \
 			-v $(HOME)/.netrc:/root/.netrc:ro \
 			$(FQ_IMAGE) \
-			kitchen $(1) $(KITCHEN_OPTS); \
+			bundle exec kitchen $(1) $(KITCHEN_OPTS); \
 	else \
 		echo bundle exec kitchen $(1) $(KITCHEN_OPTS); \
 		bundle exec kitchen $(1) $(KITCHEN_OPTS); \
@@ -34,19 +34,19 @@ format:
 		terraform fmt
 
 converge:
-	@$(call execute,converge)
+	@$(call kitchen,converge)
 
 verify:
-	@$(call execute,verify)
+	@$(call kitchen,verify)
 
 destroy:
-	@$(call execute,destroy)
+	@$(call kitchen,destroy)
 
 test:
-	@$(call execute,test)
+	@$(call kitchen,test)
 
 kitchen:
-	@$(call execute,$(COMMAND))
+	@$(call kitchen,$(COMMAND))
 
 all: deps format converge verify
 
