@@ -1,4 +1,4 @@
-.PHONY: deps format converge verify destroy test kitchen build
+.PHONY: deps format converge verify destroy test kitchen build circleci-build
 IMAGE_NAME := qualimente/terraform-infra-dev
 IMAGE_TAG := 0.9
 
@@ -27,7 +27,7 @@ define execute
 	fi;
 endef
 
-format: deps
+format:
 	@docker run --rm -it \
 		-v $(shell pwd):/module \
 		$(FQ_IMAGE) \
@@ -49,3 +49,8 @@ kitchen:
 	@$(call execute,$(COMMAND))
 
 all: deps format converge verify
+
+circleci-build:
+	circleci build \
+	-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
+	-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
