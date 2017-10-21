@@ -7,6 +7,25 @@ FQ_IMAGE := $(IMAGE_NAME):$(IMAGE_TAG)
 deps:
 	@docker pull $(FQ_IMAGE)
 
+define terraform
+	if [ -z "$(CI)" ]; then \
+		docker run --rm -it \
+			-e AWS_PROFILE=$(AWS_PROFILE) \
+			-e AWS_REGION=$(AWS_REGION) \
+			-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
+			-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
+			-e AWS_SESSION_TOKEN=$(AWS_SESSION_TOKEN) \
+			-e USER=$(USER) \
+			-v $(shell pwd):/module \
+			-v $(HOME)/.aws:/root/.aws:ro \
+			-v $(HOME)/.netrc:/root/.netrc:ro \
+			$(FQ_IMAGE) \
+			terraform $(1); \
+	else \
+		terraform $(1) -input=false; \
+	fi;
+endef
+
 define kitchen
 	if [ -z "$(CI)" ]; then \
 		docker run --rm -it \
@@ -27,11 +46,11 @@ define kitchen
 	fi;
 endef
 
+init:
+	@$(call terraform,init)
+
 format:
-	@docker run --rm -it \
-		-v $(shell pwd):/module \
-		$(FQ_IMAGE) \
-		terraform fmt
+	@$(call terraform,fmt)
 
 converge:
 	@$(call kitchen,converge)
@@ -48,7 +67,7 @@ test:
 kitchen:
 	@$(call kitchen,$(COMMAND))
 
-all: deps format converge verify
+all: deps init format converge verify
 
 circleci-build:
 	circleci build \
