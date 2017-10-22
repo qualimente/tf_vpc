@@ -4,9 +4,6 @@ IMAGE_TAG := 0.9
 
 FQ_IMAGE := $(IMAGE_NAME):$(IMAGE_TAG)
 
-deps:
-	@docker pull $(FQ_IMAGE)
-
 TERRAFORM_OPTS :=
 terraform = @$(call execute,terraform $(1) $(TERRAFORM_OPTS))
 
@@ -35,6 +32,12 @@ define execute
 	fi;
 endef
 
+deps:
+	@set -e
+	@if test -z $(CI); then \
+		docker pull $(FQ_IMAGE); \
+	fi;
+
 init:
 	@$(call terraform,init)
 
@@ -62,6 +65,6 @@ kitchen:
 all: deps init format lint converge verify
 
 circleci-build:
-	circleci build \
+	@circleci build \
 	-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
 	-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
