@@ -1,5 +1,10 @@
 // Instantiate a minimal version of the module for testing
 
+//resource "aws_instance" "invalid_instance_type" {
+//  ami           = "ami-b73b63a0"
+//  instance_type = "t1.2xlarge" # invalid type!
+//}
+
 module "it_minimal" {
   source = "../../../" //minimal integration test
 
