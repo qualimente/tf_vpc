@@ -7,26 +7,15 @@ FQ_IMAGE := $(IMAGE_NAME):$(IMAGE_TAG)
 deps:
 	@docker pull $(FQ_IMAGE)
 
-define terraform
-	if [ -z "$(CI)" ]; then \
-		docker run --rm -it \
-			-e AWS_PROFILE=$(AWS_PROFILE) \
-			-e AWS_REGION=$(AWS_REGION) \
-			-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
-			-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
-			-e AWS_SESSION_TOKEN=$(AWS_SESSION_TOKEN) \
-			-e USER=$(USER) \
-			-v $(shell pwd):/module \
-			-v $(HOME)/.aws:/root/.aws:ro \
-			-v $(HOME)/.netrc:/root/.netrc:ro \
-			$(FQ_IMAGE) \
-			terraform $(1); \
-	else \
-		terraform $(1) -input=false; \
-	fi;
-endef
+TERRAFORM_OPTS :=
+terraform = @$(call execute,terraform $(1) $(TERRAFORM_OPTS))
 
-define kitchen
+tflint = @$(call execute,tflint $(1))
+
+KITCHEN_OPTS :=
+kitchen = @$(call execute,bundle exec kitchen $(1) $(KITCHEN_OPTS))
+
+define execute
 	if [ -z "$(CI)" ]; then \
 		docker run --rm -it \
 			-e AWS_PROFILE=$(AWS_PROFILE) \
@@ -39,10 +28,10 @@ define kitchen
 			-v $(HOME)/.aws:/root/.aws:ro \
 			-v $(HOME)/.netrc:/root/.netrc:ro \
 			$(FQ_IMAGE) \
-			bundle exec kitchen $(1) $(KITCHEN_OPTS); \
+			$(1); \
 	else \
-		echo bundle exec kitchen $(1) $(KITCHEN_OPTS); \
-		bundle exec kitchen $(1) $(KITCHEN_OPTS); \
+		echo $(1); \
+		$(1); \
 	fi;
 endef
 
@@ -51,6 +40,9 @@ init:
 
 format:
 	@$(call terraform,fmt)
+
+lint:
+	@$(call tflint,)
 
 converge:
 	@$(call kitchen,converge)
@@ -67,7 +59,7 @@ test:
 kitchen:
 	@$(call kitchen,$(COMMAND))
 
-all: deps init format converge verify
+all: deps init format lint converge verify
 
 circleci-build:
 	circleci build \
