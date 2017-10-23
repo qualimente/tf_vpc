@@ -31,11 +31,12 @@ ifdef AWS_SESSION_TOKEN
 	AWS_AUTH_VARS += $(AWS_AUTH_VARS) -e AWS_SESSION_TOKEN=$(AWS_SESSION_TOKEN)
 endif
 
+AWS_OPTS := $(AWS_AUTH_VARS) -e AWS_REGION=$(AWS_REGION)
+
 define execute
 	if [ -z "$(CI)" ]; then \
 		docker run --rm -it \
-			$(AWS_AUTH_VARS) \
-			-e AWS_REGION=$(AWS_REGION) \
+			$(AWS_OPTS) \
 			-e USER=root \
 			-v $(shell pwd):/module \
 			-v $(HOME)/.aws:/root/.aws:ro \
@@ -85,6 +86,4 @@ all: deps init format lint converge verify
 
 circleci-build:
 	@circleci build \
-	-e AWS_REGION=$(AWS_REGION) \
-	-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
-	-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
+	$(AWS_OPTS)
