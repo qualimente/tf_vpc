@@ -85,5 +85,6 @@ all: deps init format lint converge verify
 
 circleci-build:
 	@circleci build \
+	-e AWS_REGION=$(AWS_REGION) \
 	-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
 	-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
