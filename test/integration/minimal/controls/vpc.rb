@@ -46,20 +46,20 @@ control 'vpc' do
   end
 
   describe "Internet Gateways for #{actual_vpc_id}" do
-    actual_igs = actual_vpc.internet_gateways
+    actual_igws = actual_vpc.internet_gateways
     its "should have one Internet Gateway"  do
-      expect(actual_igs.count).to eq(1)
+      expect(actual_igws.count).to eq(1)
     end
 
-    actual_igs.each do |actual_ig|
-      describe "internet gateway: #{actual_ig.id}" do
-        subject {internet_gateway(actual_ig.id)}
+    actual_igws.each do |actual_igw|
+      describe "internet gateway: #{actual_igw.id}" do
+        subject {internet_gateway(actual_igw.id)}
 
         it { should exist }
         
         it { should be_attached_to(actual_vpc_id)}
         
-        it { should have_tag('Name').value(expect_vpc_name) }
+        it { should have_tag('Name').value("igw-#{expect_vpc_name}") }
         it { should have_tag('Environment').value(expect_env) }
         it { should have_tag('ManagedBy').value('Terraform') }
       end
