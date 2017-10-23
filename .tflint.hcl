@@ -13,5 +13,5 @@ config {
     aws_route_invalid_gateway  = true
   }
 
-  varfile = ["tflint.tfvars"]
+  varfile = ["test/fixtures/minimal/minimal.tfvars"]
 }

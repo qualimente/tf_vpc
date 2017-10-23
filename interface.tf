@@ -10,6 +10,7 @@ variable "env" {
 
 variable "owner" {
   description = "Organizational entity that 'owns' the VPC and is responsible for its care"
+  type        = "string"
 }
 
 variable "region" {

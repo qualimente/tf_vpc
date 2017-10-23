@@ -9,8 +9,10 @@ suites:
   - name: minimal
     provisioner:
       name: terraform
+      variable_files:
+        - "test/fixtures/minimal/minimal.tfvars"
       apply_timeout: 600
-      color: true
+      color: false
       directory: >-
         test/fixtures/minimal
       variables:
