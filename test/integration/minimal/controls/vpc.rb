@@ -29,6 +29,7 @@ control 'vpc' do
   end
 
   actual_vpc = Aws::EC2::Vpc.new(actual_vpc_id)
+
   actual_vpc.subnets.each do |actual_subnet|
     describe "subnet: #{actual_subnet.id}" do
       subject { subnet(actual_subnet.id)}
@@ -41,6 +42,27 @@ control 'vpc' do
       it { should have_tag('VPCName').value(expect_vpc_name) }
       it { should have_tag('Environment').value(expect_env) }
       it { should have_tag('ManagedBy').value('Terraform') }
+    end
+  end
+
+  describe "Internet Gateways for #{actual_vpc_id}" do
+    actual_igs = actual_vpc.internet_gateways
+    its "should have one Internet Gateway"  do
+      expect(actual_igs.count).to eq(1)
+    end
+
+    actual_igs.each do |actual_ig|
+      describe "internet gateway: #{actual_ig.id}" do
+        subject {internet_gateway(actual_ig.id)}
+
+        it { should exist }
+        
+        it { should be_attached_to(actual_vpc_id)}
+        
+        it { should have_tag('Name').value(expect_vpc_name) }
+        it { should have_tag('Environment').value(expect_env) }
+        it { should have_tag('ManagedBy').value('Terraform') }
+      end
     end
   end
 
