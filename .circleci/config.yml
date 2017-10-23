@@ -16,6 +16,8 @@ jobs:
       - run:
           name: make infra
           command: make all
+      - store_artifacts:
+          path: /module/.kitchen/
       - run:
           name: destroy minimal test infra
           command: make destroy
