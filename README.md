@@ -11,7 +11,10 @@ contained in this repo.
 
 | Make Task | What happens                                                                                                  |
 |:----------|:--------------------------------------------------------------------------------------------------------------|
+| all       | Execute the canonical build for the generic infrastructure module (does not destroy infra)                    |
 | converge  | Execute `kitchen converge` for all modules                                                                    |
+| circleci-build  | Run a local circleci build                                                                              |
+| lint      | Execute `tflint` for generic infrastructure module                                                            |
 | test      | Execute `kitchen test --destroy=always` for all modules                                                       |
 | verify    | Execute `kitchen verify` for all modules                                                                      |
 | destroy   | Execute `kitchen destroy` for all modules                                                                     |
@@ -21,7 +24,11 @@ e.g. run a single test: `make kitchen COMMAND="verify minimal-aws"`
 
 **Typical Workflow:**
 
-`make destroy && make format && make converge && make verify`
+1. Start-off with a clean slate of running test infrastructure: `make destroy; make all`
+2. Make changes and (repeatedly) run: `make converge && make verify`
+3. Rebuild everything from scratch: `make destroy; make all`
+4. Commit and issue pull request
+
 
 ## Running Test Kitchen for a single module
 
