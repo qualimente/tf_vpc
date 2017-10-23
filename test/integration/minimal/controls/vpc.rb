@@ -2,6 +2,8 @@ require 'awspec'
 require 'awsecrets'
 require 'json'
 
+require_relative 'spec_helper'
+
 Awsecrets.load()
 
 expect_vpc_name = 'test-vpc'
