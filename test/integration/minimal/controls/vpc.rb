@@ -28,4 +28,20 @@ control 'vpc' do
     it { should have_tag('ManagedBy').value('Terraform') }
   end
 
+  actual_vpc = Aws::EC2::Vpc.new(actual_vpc_id)
+  actual_vpc.subnets.each do |actual_subnet|
+    describe "subnet: #{actual_subnet.id}" do
+      subject { subnet(actual_subnet.id)}
+
+      it { should exist }
+      it { should be_available }
+
+      its(:map_public_ip_on_launch) { should be false }
+
+      it { should have_tag('VPCName').value(expect_vpc_name) }
+      it { should have_tag('Environment').value(expect_env) }
+      it { should have_tag('ManagedBy').value('Terraform') }
+    end
+  end
+
 end
