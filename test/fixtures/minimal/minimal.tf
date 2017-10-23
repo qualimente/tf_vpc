@@ -1,21 +1,56 @@
 // Instantiate a minimal version of the module for testing
 
-//resource "aws_instance" "invalid_instance_type" {
-//  ami           = "ami-b73b63a0"
-//  instance_type = "t1.2xlarge" # invalid type!
-//}
-
 module "it_minimal" {
   source = "../../../" //minimal integration test
 
-  name               = "test-vpc"
-  env                = "test-env"
-  region             = "us-west-2"
-  cidr_block         = "10.17.0.0/16"
-  dmz_subnet_cidrs   = ["10.17.0.0/22", "10.17.4.0/22", "10.17.8.0/22"]
-  app_subnet_cidrs   = ["10.17.32.0/19", "10.17.64.0/19", "10.17.96.0/19"]
-  data_subnet_cidrs  = ["10.17.128.0/22", "10.17.132.0/22", "10.17.136.0/22"]
-  mgmt_subnet_cidrs  = ["10.17.160.0/24", "10.17.161.0/24", "10.17.162.0/24"]
-  availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
-  owner              = "platform"
+  name               = "${var.name}"
+  env                = "${var.env}"
+  region             = "${var.region}"
+  cidr_block         = "${var.cidr_block}"
+  dmz_subnet_cidrs   = "${var.dmz_subnet_cidrs}"
+  app_subnet_cidrs   = "${var.app_subnet_cidrs}"
+  data_subnet_cidrs  = "${var.data_subnet_cidrs}"
+  mgmt_subnet_cidrs  = "${var.mgmt_subnet_cidrs}"
+  availability_zones = ["${var.region}a", "${var.region}b", "${var.region}c"]
+  owner              = "${var.owner}"
+}
+
+variable "name" {
+  type = "string"
+}
+
+variable "env" {
+  type = "string"
+}
+
+variable "owner" {
+  type = "string"
+}
+
+variable "region" {
+  type = "string"
+}
+
+variable "availability_zones" {
+  type = "list"
+}
+
+variable "cidr_block" {
+  type = "string"
+}
+
+variable "dmz_subnet_cidrs" {
+  type = "list"
+}
+
+variable "app_subnet_cidrs" {
+  type = "list"
+}
+
+variable "data_subnet_cidrs" {
+  type = "list"
+}
+
+variable "mgmt_subnet_cidrs" {
+  type = "list"
 }

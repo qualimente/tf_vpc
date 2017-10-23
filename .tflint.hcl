@@ -3,7 +3,7 @@ config {
   deep_check = true
 
   aws_credentials = {
-    region     = "us-west-2"
+    region     = "us-east-1"
   }
 
   ignore_rule = {
@@ -13,5 +13,5 @@ config {
     aws_route_invalid_gateway  = true
   }
 
-  varfile = ["tflint.tfvars"]
+  varfile = ["test/fixtures/minimal/minimal.tfvars"]
 }
