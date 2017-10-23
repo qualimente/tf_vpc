@@ -1,4 +1,5 @@
-.PHONY: deps format converge verify destroy test kitchen build circleci-build
+.PHONY: deps format converge verify destroy shell test kitchen build circleci-build
+
 IMAGE_NAME := qualimente/terraform-infra-dev
 IMAGE_TAG := 0.9
 
@@ -12,15 +13,30 @@ tflint = @$(call execute,tflint $(1))
 KITCHEN_OPTS :=
 kitchen = @$(call execute,bundle exec kitchen $(1) $(KITCHEN_OPTS))
 
+AWS_AUTH_VARS :=
+
+ifdef AWS_PROFILE
+	AWS_AUTH_VARS += $(AWS_AUTH_VARS) -e AWS_PROFILE=$(AWS_PROFILE)
+endif
+
+ifdef AWS_ACCESS_KEY_ID
+	AWS_AUTH_VARS += $(AWS_AUTH_VARS) -e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID)
+endif
+
+ifdef AWS_SECRET_ACCESS_KEY
+	AWS_AUTH_VARS += $(AWS_AUTH_VARS) -e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
+endif
+
+ifdef AWS_SESSION_TOKEN
+	AWS_AUTH_VARS += $(AWS_AUTH_VARS) -e AWS_SESSION_TOKEN=$(AWS_SESSION_TOKEN)
+endif
+
 define execute
 	if [ -z "$(CI)" ]; then \
 		docker run --rm -it \
-			-e AWS_PROFILE=$(AWS_PROFILE) \
+			$(AWS_AUTH_VARS) \
 			-e AWS_REGION=$(AWS_REGION) \
-			-e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
-			-e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
-			-e AWS_SESSION_TOKEN=$(AWS_SESSION_TOKEN) \
-			-e USER=$(USER) \
+			-e USER=root \
 			-v $(shell pwd):/module \
 			-v $(HOME)/.aws:/root/.aws:ro \
 			-v $(HOME)/.netrc:/root/.netrc:ro \
@@ -31,6 +47,9 @@ define execute
 		$(1); \
 	fi;
 endef
+
+shell:
+	@$(call execute,sh,)
 
 deps:
 	@set -e
