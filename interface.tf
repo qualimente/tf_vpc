@@ -87,3 +87,11 @@ output "nat_eips" {
     "${aws_eip.nat.*.public_ip}",
   ]
 }
+
+output "vpc_endpoint.s3.id" {
+  value = "${aws_vpc_endpoint.private_s3.id}"
+}
+
+output "vpc_endpoint.s3.prefix_list_id" {
+  value = "${aws_vpc_endpoint.private_s3.prefix_list_id}"
+}
