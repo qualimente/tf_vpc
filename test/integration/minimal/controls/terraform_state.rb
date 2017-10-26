@@ -31,13 +31,15 @@ control 'terraform_state' do
           subject { outputs['vpc.cidr_block'] }
           it { is_expected.to eq({"sensitive" => false, "type" => "string", "value" => "10.17.0.0/16"}) }
         end
-        describe ('s3 vpc_endpoint id') do
-          subject { outputs ['vpc_endpoint.s3.id']['value']}
-          it { is_expected.to start_with("vpce-")}
-        end
-        describe ('s3 vpc_endpoint prefix list id') do
-          subject { outputs ['vpc_endpoint.s3.prefix_list_id']['value'] }
-          it { is_expected.to start_with("pl-")}
+        ['s3', 'dynamodb'].each do | service |
+            describe ("#{service} vpc_endpoint id") do
+              subject { outputs ["vpc_endpoint.#{service}.id"]['value'] }
+              it { is_expected.to start_with("vpce-")}
+            end
+            describe ("#{service} vpc_endpoint prefix list id") do
+              subject { outputs ["vpc_endpoint.#{service}.prefix_list_id"]['value'] }
+              it { is_expected.to start_with("pl-")}
+            end
         end
       end
     end

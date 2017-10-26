@@ -95,3 +95,11 @@ output "vpc_endpoint.s3.id" {
 output "vpc_endpoint.s3.prefix_list_id" {
   value = "${aws_vpc_endpoint.private_s3.prefix_list_id}"
 }
+
+output "vpc_endpoint.dynamodb.id" {
+  value = "${aws_vpc_endpoint.private_dynamodb.id}"
+}
+
+output "vpc_endpoint.dynamodb.prefix_list_id" {
+  value = "${aws_vpc_endpoint.private_dynamodb.prefix_list_id}"
+}
