@@ -10,6 +10,8 @@ terraform = @$(call execute,terraform $(1) $(TERRAFORM_OPTS))
 
 tflint = @$(call execute,tflint $(1))
 
+terraform-docs = @$(call execute,terraform-docs $(1))
+
 KITCHEN_OPTS :=
 kitchen = @$(call execute,bundle exec kitchen $(1) $(KITCHEN_OPTS))
 
@@ -82,7 +84,10 @@ test:
 kitchen:
 	@$(call kitchen,$(COMMAND))
 
-all: deps init format lint converge verify
+docs:
+	@$(call terraform-docs,markdown interface.tf > interface.md)
+
+all: deps init format lint converge verify docs
 
 circleci-build:
 	@circleci build \
